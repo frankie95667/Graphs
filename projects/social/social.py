@@ -1,3 +1,9 @@
+from util import Queue, Stack
+import random
+
+f = open("names.txt", "r")
+names = f.read().split("\n")
+
 class User:
     def __init__(self, name):
         self.name = name
@@ -45,8 +51,14 @@ class SocialGraph:
         # !!!! IMPLEMENT ME
 
         # Add users
+        for i in range(num_users):
+            name = random.choice(names)
+            self.add_user(name)
 
         # Create friendships
+        for i in range(1, self.last_id + 1):
+            for j in range(avg_friendships):
+                self.add_friendship(i, random.choice(range(1, self.last_id + 1)))
 
     def get_all_social_paths(self, user_id):
         """
@@ -59,12 +71,35 @@ class SocialGraph:
         """
         visited = {}  # Note that this is a dictionary, not a set
         # !!!! IMPLEMENT ME
+        q = Queue()
+        q.enqueue([user_id])
+
+        while q.size() > 0:
+            path = q.dequeue()
+            v = path[-1]
+
+            if v not in visited:
+                visited[v] = path
+
+                for friend in self.friendships[v]:
+                    q.enqueue(path + [friend])
+
         return visited
 
 
 if __name__ == '__main__':
     sg = SocialGraph()
     sg.populate_graph(10, 2)
+
+    # sg.add_user("Anthony")
+    # sg.add_user("Jane")
+    # sg.add_user("Julie")
+    # sg.add_user("Audrey")
+
+    # sg.add_friendship(1, 2)
+    # sg.add_friendship(2, 3)
+    # sg.add_friendship(3, 4)
+
     print(sg.friendships)
     connections = sg.get_all_social_paths(1)
     print(connections)
