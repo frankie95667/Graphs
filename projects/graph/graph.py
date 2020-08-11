@@ -135,15 +135,16 @@ class Graph:
 
         This should be done using recursion.
         """
-
+        path = path + [starting_vertex]
+        
         if starting_vertex == destination_vertex:
-            return path + [starting_vertex]
+            return path
 
-        # if starting_vertex not in visited:
         for next_vertex in self.get_neighbors(starting_vertex):
             if next_vertex not in path:
-                path = path + [next_vertex]
-                self.dfs_recursive(next_vertex, destination_vertex, path)
+                temp_path = self.dfs_recursive(next_vertex, destination_vertex, path)
+                if temp_path: return temp_path
+        return None
 
 if __name__ == '__main__':
     graph = Graph()  # Instantiate your graph
