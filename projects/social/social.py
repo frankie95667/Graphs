@@ -52,13 +52,26 @@ class SocialGraph:
 
         # Add users
         for i in range(num_users):
-            name = random.choice(names)
-            self.add_user(name)
+            self.add_user(f"User {i + 1}")
 
         # Create friendships
-        for i in range(1, self.last_id + 1):
-            for j in range(avg_friendships):
-                self.add_friendship(i, random.choice(range(1, self.last_id + 1)))
+        possible_friendships = []
+        # generate all possible friendship combinations
+        # avoid dups by ensuring first num < second_num
+        for user_id in self.users:
+            for friend_id in range(user_id + 1, self.last_id + 1):
+                possible_friendships.append((user_id, friend_id))
+
+        # shuffle friendships
+        random.shuffle(possible_friendships)
+
+        # create friendships for the first N pairs of the list 
+        # N -> num_users * avg_friendships // 2
+        N = num_users * avg_friendships // 2
+        for i in range(N):
+            friendship = possible_friendships[i]
+            user_id, friend_id = friendship
+            self.add_friendship(user_id, friend_id)
 
     def get_all_social_paths(self, user_id):
         """
@@ -90,16 +103,10 @@ class SocialGraph:
 if __name__ == '__main__':
     sg = SocialGraph()
     sg.populate_graph(10, 2)
-
-    # sg.add_user("Anthony")
-    # sg.add_user("Jane")
-    # sg.add_user("Julie")
-    # sg.add_user("Audrey")
-
-    # sg.add_friendship(1, 2)
-    # sg.add_friendship(2, 3)
-    # sg.add_friendship(3, 4)
-
+    print(sg.friendships)
+    connections = sg.get_all_social_paths(1)
+    print(connections)
+    sg.populate_graph(6, 1)
     print(sg.friendships)
     connections = sg.get_all_social_paths(1)
     print(connections)

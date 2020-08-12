@@ -56,10 +56,8 @@ class Graph:
                 visited.add(v)
 
                 if len(self.get_neighbors(v)) == 0:
-                    if path_len < len(path):
+                    if (path_len < len(path) or (path_len == len(path) and res > v)):
                         path_len = len(path)
-                        res = v
-                    elif path_len == len(path) and res > v:
                         res = v
 
                 for next_vertex in self.get_neighbors(v):
